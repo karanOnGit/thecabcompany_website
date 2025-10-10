@@ -1,0 +1,25 @@
+version: 1
+applications:
+  - appRoot: .
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - echo "Installing dependencies..."
+            - npm ci
+        build:
+          commands:
+            - echo "Building the Next.js app..."
+            - npm run build
+      artifacts:
+        baseDirectory: .next
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
+
+    # Optional environment variables
+    environment:
+      NEXT_PUBLIC_API_URL: "https://api.thecabcompany.in"
+      NEXT_PUBLIC_ANALYTICS_ID: "G-128LEEMRNX"
