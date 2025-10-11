@@ -1,6 +1,6 @@
 // app/sitemap.js
 export default async function sitemap() {
-    const baseUrl = "https://thecabcompany.in";
+    const baseUrl = "https://www.thecabcompany.in";
     // const baseUrl = "http://192.168.0.7:3000";
 
     // Example: if you have dynamic pages like /products/[id]
