@@ -3,6 +3,10 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
 
+// Components
+import Navbar from "@/components/Header/Navbar";
+import Footer from "@/components/Footer/Footer";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -24,7 +28,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "TheCabCompany",
-    description: "Book cabs easily and efficiently with TheCabCompany.",
+    description: "Book cabs easily and efficiently with TheCabCompany. Download our App now. It's avai;available on Play Store as well as App Store",
     url: "https://www.thecabcompany.in",
     siteName: "TheCabCompany",
     type: "website",
@@ -43,7 +47,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans`}
       >
         {/* ✅ Google Analytics */}
         <Script
@@ -59,7 +63,9 @@ export default function RootLayout({
           `}
         </Script>
 
-        {children}
+        <Navbar />
+          {children}
+        <Footer />
       </body>
     </html>
   );
