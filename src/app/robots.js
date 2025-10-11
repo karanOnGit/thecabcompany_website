@@ -1,6 +1,6 @@
 // app/robots.js
 export default function robots() {
-    const baseUrl = "https://thecabcompany.in";
+    const baseUrl = "https://www.thecabcompany.in";
 
     return {
         rules: {

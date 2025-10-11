@@ -20,12 +20,12 @@ export const metadata: Metadata = {
   },
   description: "A platform for booking cabs easily and efficiently.",
   alternates: {
-    canonical: "https://thecabcompany.in",
+    canonical: "https://www.thecabcompany.in",
   },
   openGraph: {
     title: "TheCabCompany",
     description: "Book cabs easily and efficiently with TheCabCompany.",
-    url: "https://thecabcompany.in",
+    url: "https://www.thecabcompany.in",
     siteName: "TheCabCompany",
     type: "website",
   },
