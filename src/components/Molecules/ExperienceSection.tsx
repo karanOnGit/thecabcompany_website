@@ -17,7 +17,7 @@ const ExperienceSection = () => {
                 </p>
             </div>
 
-            {/* <ImageCard images={images} /> */}
+            <ImageCard images={images} />
         </div>
     );
 };
