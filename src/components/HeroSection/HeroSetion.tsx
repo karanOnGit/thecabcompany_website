@@ -1,30 +1,14 @@
 "use client";
 import React from "react";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 
-interface TextVariants {
-    hidden: {
-        opacity: number;
-        y: number;
-    };
-    visible: (i: number) => {
-        opacity: number;
-        y: number;
-        transition: {
-            delay: number;
-            duration: number;
-            ease: string;
-        };
-    };
-}
-
-const textVariants: TextVariants = {
+const textVariants: Variants = {
     hidden: { opacity: 0, y: 40 },
     visible: (i: number) => ({
         opacity: 1,
         y: 0,
         transition: {
-            delay: i * 0.3, // delay between spans
+            delay: i * 0.3,
             duration: 0.8,
             ease: "easeOut",
         },
@@ -42,7 +26,9 @@ const HeroSection = () => {
                         initial="hidden"
                         animate="visible"
                         variants={textVariants}
-                        className={i === 0 || i === 2 ? "text-[#00ff30] block" : "block"}
+                        className={
+                            i === 0 || i === 2 ? "text-[#00ff30] block" : "block"
+                        }
                     >
                         {text}
                     </motion.span>

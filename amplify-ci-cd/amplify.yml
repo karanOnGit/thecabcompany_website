@@ -3,6 +3,11 @@ applications:
   - appRoot: .
     frontend:
       phases:
+        deleting:
+          commands:
+            - echo "Deleting preBuilds..."
+            - rm -rf node_modules
+            - rm -rf .next
         preBuild:
           commands:
             - echo "Installing dependencies..."
@@ -18,8 +23,6 @@ applications:
       cache:
         paths:
           - node_modules/**/*
-
-    # Optional environment variables
     environment:
       NEXT_PUBLIC_API_URL: "https://api.thecabcompany.in"
       NEXT_PUBLIC_ANALYTICS_ID: "G-128LEEMRNX"
