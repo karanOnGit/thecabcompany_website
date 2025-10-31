@@ -2,6 +2,10 @@ import React from 'react';
 import Image from "next/image";
 import OurStorySection from '@/components/Molecules/OurStorySection';
 import AboutNewsSection from '@/components/Molecules/AboutNewsSection';
+import TrustNewSection from '@/components/Molecules/TrustNewSection';
+import AboutPlatformSection from '@/components/Molecules/AboutPlatformSection';
+import AboutComponyFigures from '@/components/Molecules/AboutComponyFigures';
+import AboutFairServices from '@/components/Molecules/AboutFairServices';
 
 const page = () => {
     return (
@@ -25,6 +29,10 @@ const page = () => {
             </div>
 
             <OurStorySection />
+            <AboutFairServices />
+            <TrustNewSection />
+            <AboutPlatformSection />
+            <AboutComponyFigures />
             <AboutNewsSection />
         </div>
     )

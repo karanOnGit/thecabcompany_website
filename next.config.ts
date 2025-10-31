@@ -22,6 +22,26 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "images.ctfassets.net"
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com"
+      },
+      {
+        protocol: "https",
+        hostname: "img.freepik.com"
+      },
+      {
+        protocol: "https",
+        hostname: "cdsassets.apple.com"
+      },
+      {
+        protocol: "https",
+        hostname: "media.licdn.com" 
+      },
+      {
+        protocol: "https",
+        hostname: "images.pexels.com" 
       }
     ],
   },
