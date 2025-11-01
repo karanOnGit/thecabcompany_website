@@ -30,14 +30,14 @@ const AboutCompanyFigures = () => {
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentImage((prev) => (prev + 1) % images.length);
-        }, 15000);
+        }, 7000);
         return () => clearInterval(interval);
     }, []);
 
     const currentMember = teamMembers[currentImage];
 
     return (
-        <section className="relative overflow-hidden h-[90vh]">
+        <section className="relative overflow-hidden py-20">
             <div className="absolute inset-0">
                 <Image
                     src="https://images.unsplash.com/photo-1483750356451-828d7d2cec30?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170"
