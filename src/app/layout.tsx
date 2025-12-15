@@ -18,17 +18,24 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  // ✅ Fix: Base URL set karo taaki relative URLs kaam karein
+  metadataBase: new URL("https://www.thecabcompany.in"),
+
   title: {
     default: "TheCabCompany",
     template: "%s | TheCabCompany",
   },
   description: "A platform for booking cabs easily and efficiently.",
+
   alternates: {
-    canonical: "https://www.thecabcompany.in",
+    // ✅ Fix: Isse './' kar do. Next.js ab khud current path jod lega.
+    // Example: /about page par ye ban jayega: https://www.thecabcompany.in/about
+    canonical: "./",
   },
+
   openGraph: {
     title: "TheCabCompany",
-    description: "Book cabs easily and efficiently with TheCabCompany. Download our App now. It's avai;available on Play Store as well as App Store",
+    description: "Book cabs easily and efficiently with TheCabCompany. Download our App now. It's available on Play Store as well as App Store",
     url: "https://www.thecabcompany.in",
     siteName: "TheCabCompany",
     type: "website",
@@ -64,7 +71,7 @@ export default function RootLayout({
         </Script>
 
         <Navbar />
-          {children}
+        {children}
         <Footer />
       </body>
     </html>
