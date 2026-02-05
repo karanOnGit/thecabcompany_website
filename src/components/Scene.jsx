@@ -54,14 +54,83 @@ function Asteroids({ count = 300 }) {
     )
 }
 
+// Particle Ring Component
+function RingParticles({ count = 4000, radius = 4, thickness = 1, speed = 0.02 }) {
+    const mesh = useRef()
+
+    const points = useMemo(() => {
+        const p = new Float32Array(count * 3)
+        const c = new Float32Array(count * 3)
+        const baseColor = new THREE.Color('#FFFFFF') // White glow
+
+        for (let i = 0; i < count; i++) {
+            // Angle around the ring
+            const angle = Math.random() * Math.PI * 2
+
+            // Distance from center (Gaussian-like distribution for fade effect)
+            const r = radius + (Math.random() - 0.5) * thickness
+
+            // Vertical scatter for volume
+            const y = (Math.random() - 0.5) * 0.15
+
+            const x = Math.cos(angle) * r
+            const z = Math.sin(angle) * r
+
+            p[i * 3] = x
+            p[i * 3 + 1] = y
+            p[i * 3 + 2] = z
+
+            // Color variation (White to slight silver/blue)
+            c[i * 3] = baseColor.r
+            c[i * 3 + 1] = baseColor.g * (0.8 + Math.random() * 0.2)
+            c[i * 3 + 2] = baseColor.b * (0.8 + Math.random() * 0.2)
+        }
+        return { p, c }
+    }, [count, radius, thickness])
+
+    useFrame((state, delta) => {
+        if (mesh.current) {
+            mesh.current.rotation.y += delta * speed // Spin around its own Y axis
+        }
+    })
+
+    return (
+        <points ref={mesh}>
+            <bufferGeometry>
+                <bufferAttribute
+                    attach="attributes-position"
+                    count={points.p.length / 3}
+                    array={points.p}
+                    itemSize={3}
+                />
+                <bufferAttribute
+                    attach="attributes-color"
+                    count={points.c.length / 3}
+                    array={points.c}
+                    itemSize={3}
+                />
+            </bufferGeometry>
+            <pointsMaterial
+                size={0.03}
+                vertexColors
+                transparent
+                opacity={0.4}
+                sizeAttenuation
+                blending={THREE.AdditiveBlending}
+                depthWrite={false}
+            />
+        </points>
+    )
+}
+
 export default function Scene() {
-    const meshRef = useRef()
+    const planetRef = useRef()
     const atmosphereRef = useRef()
     const cameraRef = useRef()
 
     useFrame((state, delta) => {
-        if (meshRef.current) {
-            meshRef.current.rotation.y += delta * 0.05
+        if (planetRef.current) {
+            planetRef.current.rotation.y += delta * 0.05
         }
         if (atmosphereRef.current) {
             atmosphereRef.current.rotation.y += delta * 0.07 // Rotate atmosphere slightly faster
@@ -79,7 +148,7 @@ export default function Scene() {
                 cameraRef.current.position.z = 12 - progress * 15 // Start further, go deeper
                 cameraRef.current.position.y = -progress * 4
 
-                // Slight camera rotation for dynamic feel
+                // Slight camera rotation
                 cameraRef.current.rotation.z = progress * 0.1
                 cameraRef.current.rotation.x = -progress * 0.2
             }
@@ -99,36 +168,37 @@ export default function Scene() {
             <pointLight position={[-50, -20, -30]} intensity={1.5} color="#bf00ff" />
 
             <Float speed={1} rotationIntensity={0.5} floatIntensity={0.5}>
-                <group ref={meshRef}>
-                    {/* Planet Core */}
-                    <Sphere args={[2.5, 64, 64]}>
-                        <meshStandardMaterial
-                            color="#1a1a3a"
-                            roughness={0.7}
-                            metalness={0.2}
-                        />
-                    </Sphere>
+                <group>
+                    {/* Planet Core (Rotates Independently) */}
+                    <group ref={planetRef}>
+                        <Sphere args={[2.5, 64, 64]}>
+                            <meshStandardMaterial
+                                color="#1a1a3a"
+                                roughness={0.7}
+                                metalness={0.2}
+                            />
+                        </Sphere>
+                        {/* Atmosphere / Glow */}
+                        <Sphere args={[2.65, 64, 64]} ref={atmosphereRef}>
+                            <meshPhongMaterial
+                                color="#4040ff"
+                                transparent
+                                opacity={0.15}
+                                side={THREE.BackSide}
+                                blending={THREE.AdditiveBlending}
+                            />
+                        </Sphere>
+                    </group>
 
-                    {/* Planet Rings (Torus) */}
-                    <mesh rotation={[Math.PI / 2.5, 0, 0]}>
-                        <torusGeometry args={[3.8, 0.05, 16, 100]} />
-                        <meshBasicMaterial color="#00f3ff" transparent opacity={0.6} />
-                    </mesh>
-                    <mesh rotation={[Math.PI / 2.5, 0, 0]}>
-                        <torusGeometry args={[4.0, 0.02, 16, 100]} />
-                        <meshBasicMaterial color="#bf00ff" transparent opacity={0.4} />
-                    </mesh>
-
-                    {/* Atmosphere / Glow */}
-                    <Sphere args={[2.65, 64, 64]} ref={atmosphereRef}>
-                        <meshPhongMaterial
-                            color="#4040ff"
-                            transparent
-                            opacity={0.15}
-                            side={THREE.BackSide}
-                            blending={THREE.AdditiveBlending}
-                        />
-                    </Sphere>
+                    {/* Particle Rings - Static Tilt, Internal Spin */}
+                    {/* Rotation: X-axis 70deg (tilt forward), Z-axis -20deg (diagonal tilt) */}
+                    <group rotation={[190 * Math.PI / 180, 0, -30 * Math.PI / 180]}>
+                        {/* <RingParticles count={6000} radius={1} thickness={1.5} speed={0.05} />
+                        <RingParticles count={3000} radius={2} thickness={0.5} speed={0.03} /> */}
+                        <RingParticles count={6000} radius={3} thickness={0.5} speed={0.03} />
+                        <RingParticles count={6000} radius={4} thickness={0.5} speed={0.06} />
+                        <RingParticles count={20000} radius={6} thickness={2.5} speed={0.09} />
+                    </group>
                 </group>
             </Float>
 
