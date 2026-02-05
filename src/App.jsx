@@ -27,7 +27,7 @@ function App() {
             <CustomCursor />
             <div className="canvas-container" style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: -1 }}>
                 <Canvas dpr={[1, 2]}>
-                    <color attach="background" args={['#0a0a0a']} />
+                    <color attach="background" args={['#030305']} />
                     <Scene />
                 </Canvas>
             </div>
