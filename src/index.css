@@ -3,10 +3,18 @@
 :root {
     --font-heading: 'Orbitron', system-ui, sans-serif;
     --font-body: 'Exo 2', system-ui, sans-serif;
-    --color-bg: #030305;
-    --color-text: #e0e0e0;
-    --color-accent: #00f3ff;
-    --color-accent-secondary: #bf00ff;
+    --color-bg: #020203;
+    /* Deep Void Black */
+    --color-text: #F0F2F5;
+    /* Soft White */
+    --color-accent: #64FFDA;
+    /* Professional Teal/Cyan */
+    --color-accent-secondary: #7F5AF0;
+    /* Deep Purple */
+}
+
+.text-glow {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(100, 255, 218, 0.3);
 }
 
 * {
