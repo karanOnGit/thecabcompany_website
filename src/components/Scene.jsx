@@ -1,127 +1,12 @@
-import { useRef, useMemo, useLayoutEffect } from 'react'
+import { useRef, useLayoutEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { PerspectiveCamera, Environment, Float, Stars, Sphere, Cloud, Sparkles } from '@react-three/drei'
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import * as THREE from 'three'
 import Particles from './Particles'
-
-function Asteroids({ count = 300 }) {
-    const mesh = useRef()
-    const dummy = useMemo(() => new THREE.Object3D(), [])
-
-    const asteroids = useMemo(() => {
-        const temp = []
-        for (let i = 0; i < count; i++) {
-            const t = Math.random() * 100
-            const factor = 20 + Math.random() * 100
-            const speed = 0.01 + Math.random() / 200
-            const xFactor = -50 + Math.random() * 100
-            const yFactor = -50 + Math.random() * 100
-            const zFactor = -50 + Math.random() * 100
-            temp.push({ t, factor, speed, xFactor, yFactor, zFactor, mx: 0, my: 0 })
-        }
-        return temp
-    }, [count])
-
-    useFrame((state, delta) => {
-        asteroids.forEach((data, i) => {
-            let { t, factor, speed, xFactor, yFactor, zFactor } = data
-            t = data.t += speed / 2
-            const a = Math.cos(t) + Math.sin(t * 1) / 10
-            const b = Math.sin(t) + Math.cos(t * 2) / 10
-            const s = Math.cos(t)
-
-            dummy.position.set(
-                (data.xFactor + Math.cos(t / 10) * factor) + (Math.sin(t * 1) * factor) / 10,
-                (data.yFactor + Math.sin(t / 10) * factor) + (Math.cos(t * 2) * factor) / 10,
-                (data.zFactor + Math.cos(t / 10) * factor) + (Math.sin(t * 3) * factor) / 10
-            )
-            dummy.scale.set(s, s, s)
-            dummy.rotation.set(s * 5, s * 5, s * 5)
-            dummy.updateMatrix()
-
-            mesh.current.setMatrixAt(i, dummy.matrix)
-        })
-        mesh.current.instanceMatrix.needsUpdate = true
-        mesh.current.rotation.y += delta * 0.02
-    })
-
-    return (
-        <instancedMesh ref={mesh} args={[null, null, count]}>
-            <dodecahedronGeometry args={[0.2, 0]} />
-            <meshStandardMaterial color="#505050" roughness={0.8} />
-        </instancedMesh>
-    )
-}
-
-// Particle Ring Component
-function RingParticles({ count = 4000, radius = 4, thickness = 1, speed = 0.02 }) {
-    const mesh = useRef()
-
-    const points = useMemo(() => {
-        const p = new Float32Array(count * 3)
-        const c = new Float32Array(count * 3)
-        const baseColor = new THREE.Color('#FFFFFF') // White glow
-
-        for (let i = 0; i < count; i++) {
-            // Angle around the ring
-            const angle = Math.random() * Math.PI * 2
-
-            // Distance from center (Gaussian-like distribution for fade effect)
-            const r = radius + (Math.random() - 0.5) * thickness
-
-            // Vertical scatter for volume
-            const y = (Math.random() - 0.5) * 0.15
-
-            const x = Math.cos(angle) * r
-            const z = Math.sin(angle) * r
-
-            p[i * 3] = x
-            p[i * 3 + 1] = y
-            p[i * 3 + 2] = z
-
-            // Color variation (White to slight silver/blue)
-            c[i * 3] = baseColor.r
-            c[i * 3 + 1] = baseColor.g * (0.8 + Math.random() * 0.2)
-            c[i * 3 + 2] = baseColor.b * (0.8 + Math.random() * 0.2)
-        }
-        return { p, c }
-    }, [count, radius, thickness])
-
-    useFrame((state, delta) => {
-        if (mesh.current) {
-            mesh.current.rotation.y += delta * speed // Spin around its own Y axis
-        }
-    })
-
-    return (
-        <points ref={mesh}>
-            <bufferGeometry>
-                <bufferAttribute
-                    attach="attributes-position"
-                    count={points.p.length / 3}
-                    array={points.p}
-                    itemSize={3}
-                />
-                <bufferAttribute
-                    attach="attributes-color"
-                    count={points.c.length / 3}
-                    array={points.c}
-                    itemSize={3}
-                />
-            </bufferGeometry>
-            <pointsMaterial
-                size={0.03}
-                vertexColors
-                transparent
-                opacity={0.4}
-                sizeAttenuation
-                blending={THREE.AdditiveBlending}
-                depthWrite={false}
-            />
-        </points>
-    )
-}
+import Asteroids from './Asteroids'
+import RingParticles from './RingParticles'
+import Sun from './Sun'
 
 export default function Scene() {
     const planetRef = useRef()
@@ -148,7 +33,7 @@ export default function Scene() {
                 cameraRef.current.position.z = 12 - progress * 15 // Start further, go deeper
                 cameraRef.current.position.y = -progress * 4
 
-                // Slight camera rotation
+                // Slight camera rotation for dynamic feel
                 cameraRef.current.rotation.z = progress * 0.1
                 cameraRef.current.rotation.x = -progress * 0.2
             }
@@ -162,9 +47,11 @@ export default function Scene() {
         <>
             <PerspectiveCamera makeDefault position={[0, 0, 12]} ref={cameraRef} />
 
+            {/* Distant Sun in the bottom right corner */}
+            <Sun x={20} y={0} z={-250} />
+
             {/* Space Lighting - Dramatic and cool */}
             <ambientLight intensity={0.05} color="#4040a0" />
-            <pointLight position={[50, 20, 30]} intensity={2.5} color="#00f3ff" />
             <pointLight position={[-50, -20, -30]} intensity={1.5} color="#bf00ff" />
 
             <Float speed={1} rotationIntensity={0.5} floatIntensity={0.5}>
@@ -193,8 +80,6 @@ export default function Scene() {
                     {/* Particle Rings - Static Tilt, Internal Spin */}
                     {/* Rotation: X-axis 70deg (tilt forward), Z-axis -20deg (diagonal tilt) */}
                     <group rotation={[190 * Math.PI / 180, 0, -30 * Math.PI / 180]}>
-                        {/* <RingParticles count={6000} radius={1} thickness={1.5} speed={0.05} />
-                        <RingParticles count={3000} radius={2} thickness={0.5} speed={0.03} /> */}
                         <RingParticles count={6000} radius={3} thickness={0.5} speed={0.03} />
                         <RingParticles count={6000} radius={4} thickness={0.5} speed={0.06} />
                         <RingParticles count={20000} radius={6} thickness={2.5} speed={0.09} />
