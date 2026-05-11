@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
 
 const Section = ({ children, style, className }) => (
     <section
@@ -84,6 +85,28 @@ export default function Overlay() {
                     <p className="typewriter" style={{ fontFamily: 'monospace', color: '#666' }}>
                         &gt; Initializing protocol...
                     </p>
+                </AnimatedText>
+
+                <AnimatedText delay={1.4} style={{ marginTop: '2rem' }}>
+                    <Link
+                        to="/blog"
+                        style={{
+                            display: 'inline-block',
+                            textDecoration: 'none',
+                            color: '#000',
+                            background: 'var(--color-accent)',
+                            padding: '0.65rem 2rem',
+                            borderRadius: '50px',
+                            fontWeight: 700,
+                            fontSize: '0.9rem',
+                            letterSpacing: '0.08em',
+                            transition: 'transform 0.25s, background 0.25s',
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-3px)'}
+                        onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+                    >
+                        VIEW BLOGS →
+                    </Link>
                 </AnimatedText>
             </Section>
 
